@@ -193,7 +193,7 @@ class Tvshows(object):
             # get a random genre if no genre provided
             json_result = self.metadatautils.kodidb.genres("tvshow")
             if json_result:
-                genre = json_result[0]["label"]
+                genre = json_result[randint(0, len(json_result)-1)]["label"]
         if genre:
             # get all tvshows from the same genre
             for item in self.get_genre_tvshows(genre, self.options["hide_watched"], self.options["limit"]):

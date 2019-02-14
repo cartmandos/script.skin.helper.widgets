@@ -183,7 +183,10 @@ class Movies(object):
         genre = self.options.get("genre", "")
         # get a random genre if no genre found
         if not genre:
-            genres = self.metadatautils.kodidb.genres("movie")[0]["label"]
+            # get a random genre if no genre provided
+            json_result = self.metadatautils.kodidb.genres("movie")
+            if json_result:
+                genre = json_result[randint(0, len(json_result) - 1)]["label"]
         all_items = []
         if genre:
             # get all movies from the same genre
