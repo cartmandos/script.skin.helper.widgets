@@ -33,7 +33,7 @@ msgid "Recommended Movies"
 msgstr ""
 
 msgctxt "#32004"
-msgid "Recommended Media"
+msgid "Top Rated Media"
 msgstr ""
 
 msgctxt "#32005"
@@ -249,7 +249,7 @@ msgid "Mixed Media"
 msgstr ""
 
 msgctxt "#32058"
-msgid "Movies and Tvshows in IMDB Top250"
+msgid "Movies and Tvshows in IMDB Top250 by Rank"
 msgstr ""
 
 msgctxt "#32059"
@@ -297,7 +297,7 @@ msgid "Recently played TV channels"
 msgstr ""
 
 msgctxt "#32070"
-msgid "In progress TV shows and movies"
+msgid "In-Progress TV Shows and Movies"
 msgstr ""
 
 msgctxt "#32071"
@@ -318,4 +318,88 @@ msgstr ""
 
 msgctxt "#32075"
 msgid "Playlists (Choose playlist for Movies then TV Shows)"
+msgstr ""
+
+msgctxt "#32076"
+msgid "Top rated Movies in genre"
+msgstr ""
+
+msgctxt "#32077"
+msgid "Top rated TV Shows in genre"
+msgstr ""
+
+msgctxt "#32078"
+msgid "Recent TV Shows and Movies"
+msgstr ""
+
+msgctxt "#32079"
+msgid "Random TV Shows and Movies"
+msgstr ""
+
+msgctxt "#32080"
+msgid "In-Progress Episodes and Movies"
+msgstr ""
+
+msgctxt "#32081"
+msgid "Random from IMDB Top250"
+msgstr ""
+
+msgctxt "#32082"
+msgid "General"
+msgstr ""
+
+msgctxt "#32083"
+msgid "Watch Again Movies and TV Shows"
+msgstr ""
+
+msgctxt "#32084"
+msgid "Recommended Movies and TV Shows"
+msgstr ""
+
+msgctxt "#32085"
+msgid "Top Picks Movies and TV Shows"
+msgstr ""
+
+msgctxt "#32086"
+msgid "Watch Again Movies and TV Shows"
+msgstr ""
+
+msgctxt "#32087"
+msgid "New Release in Movies and TV Shows"
+msgstr ""
+
+msgctxt "#32088"
+msgid "Unwatched Movies and TV Shows"
+msgstr ""
+
+msgctxt "#32089"
+msgid "Movies and TV Shows in Genre"
+msgstr ""
+
+msgctxt "#32090"
+msgid "Popular Movies and TV Shows"
+msgstr ""
+
+msgctxt "#32091"
+msgid "New Release in Movies"
+msgstr ""
+
+msgctxt "#32092"
+msgid "New Release in TV Shows"
+msgstr ""
+
+msgctxt "#32093"
+msgid "Enable My List (items that are tagged as 'mylist')"
+msgstr ""
+
+msgctxt "#32094"
+msgid "Movies and TV Shows in My List"
+msgstr ""
+
+msgctxt "#32095"
+msgid "Movies in My List"
+msgstr ""
+
+msgctxt "#32096"
+msgid "TV Shows in My List"
 msgstr ""

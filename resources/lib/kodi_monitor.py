@@ -1,11 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-'''
+"""
     script.skin.helper.widgets
     kodi_monitor.py
     monitor kodi events to auto refresh widgets
-'''
+"""
 
 from utils import log_msg
 import xbmc
@@ -14,7 +14,7 @@ import json
 
 
 class KodiMonitor(xbmc.Monitor):
-    '''Monitor all events in Kodi'''
+    """Monitor all events in Kodi"""
     update_widgets_busy = False
     last_mediatype = ""
 
@@ -24,7 +24,7 @@ class KodiMonitor(xbmc.Monitor):
         self.addon = kwargs.get("addon")
 
     def onDatabaseUpdated(self, database):
-        '''builtin function for the xbmc.Monitor class'''
+        """builtin function for the xbmc.Monitor class"""
         log_msg("Kodi_Monitor: %s database updated" % database)
         if database == "music":
             self.refresh_music_widgets("")
@@ -32,7 +32,7 @@ class KodiMonitor(xbmc.Monitor):
             self.refresh_video_widgets("")
 
     def onNotification(self, sender, method, data):
-        '''builtin function for the xbmc.Monitor class'''
+        """builtin function for the xbmc.Monitor class"""
         try:
             log_msg("Kodi_Monitor: sender %s - method: %s  - data: %s" % (sender, method, data))
             data = json.loads(data.decode('utf-8'))
@@ -45,7 +45,7 @@ class KodiMonitor(xbmc.Monitor):
 
             if method == "VideoLibrary.OnUpdate":
                 if not mediatype:
-                    mediatype = self.last_mediatype # temp hack
+                    mediatype = self.last_mediatype  # temp hack
                 self.refresh_video_widgets(mediatype)
 
             if method == "AudioLibrary.OnUpdate":
@@ -61,7 +61,7 @@ class KodiMonitor(xbmc.Monitor):
             log_msg("Exception in KodiMonitor: %s" % exc, xbmc.LOGERROR)
 
     def refresh_music_widgets(self, media_type):
-        '''refresh music widgets'''
+        """refresh music widgets"""
         log_msg("Music database changed - type: %s - refreshing widgets...." % media_type)
         timestr = time.strftime("%Y%m%d%H%M%S", time.gmtime())
         self.win.setProperty("widgetreload-music", timestr)
@@ -70,7 +70,7 @@ class KodiMonitor(xbmc.Monitor):
             self.win.setProperty("widgetreload-%ss" % media_type, timestr)
 
     def refresh_video_widgets(self, media_type):
-        '''refresh video widgets'''
+        """refresh video widgets"""
         log_msg("Video database changed - type: %s - refreshing widgets...." % media_type)
         timestr = time.strftime("%Y%m%d%H%M%S", time.gmtime())
         self.win.setProperty("widgetreload", timestr)
@@ -80,7 +80,7 @@ class KodiMonitor(xbmc.Monitor):
                 self.win.setProperty("widgetreload-tvshows", timestr)
 
     def onSettingsChanged(self):
-        '''called by Kodi when the addon settings are changed'''
+        """called by Kodi when the addon settings are changed"""
         timestr = time.strftime("%Y%m%d%H%M%S", time.gmtime())
         self.win.setProperty("widgetreload", timestr)
         self.win.setProperty("widgetreloadmusic", timestr)

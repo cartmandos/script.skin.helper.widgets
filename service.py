@@ -1,10 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-'''
+"""
     script.skin.helper.widgets
     Main service entry point
-'''
+"""
 
 from resources.lib.utils import log_msg, ADDON_ID
 from resources.lib.kodi_monitor import KodiMonitor

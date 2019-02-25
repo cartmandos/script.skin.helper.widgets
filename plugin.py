@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-'''main plugin entrypoint'''
+"""main plugin entrypoint"""
 
 import os
 import sys

@@ -1,11 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-'''
+"""
     script.skin.helper.widgets
     pvr.py
     all PVR widgets provided by the script
-'''
+"""
 
 from utils import create_main_entry
 from operator import itemgetter
@@ -14,17 +14,17 @@ from urllib import quote_plus
 
 
 class Pvr(object):
-    '''all channel widgets provided by the script'''
+    """all channel widgets provided by the script"""
 
     def __init__(self, addon, metadatautils, options):
-        '''Initializations pass our common classes and the widget options as arguments'''
+        """Initializations pass our common classes and the widget options as arguments"""
         self.metadatautils = metadatautils
         self.addon = addon
         self.options = options
         self.enable_artwork = self.addon.getSetting("pvr_enable_artwork") == "true"
 
     def listing(self):
-        '''main listing with all our channel nodes'''
+        """main listing with all our channel nodes"""
 
         # add generic pvr entries
         all_items = [
@@ -54,7 +54,7 @@ class Pvr(object):
         return self.metadatautils.process_method_on_list(create_main_entry, all_items)
 
     def channels(self):
-        ''' get all channels '''
+        """ get all channels """
         all_items = []
         channelgroupid = self.options.get("channelgroup")
         if channelgroupid:
@@ -67,7 +67,7 @@ class Pvr(object):
         return all_items
 
     def lastchannels(self):
-        ''' get last played channels '''
+        """ get last played channels """
         all_items = []
         if xbmc.getCondVisibility("Pvr.HasTVChannels"):
             # get full channels listing (as there is no way to apply filtering)
@@ -81,7 +81,7 @@ class Pvr(object):
         return all_items
 
     def recordings(self, next_only=False):
-        '''get all recordings'''
+        """get all recordings"""
         all_items = []
         all_titles = []
         if xbmc.getCondVisibility("Pvr.HasTVChannels"):
@@ -112,11 +112,11 @@ class Pvr(object):
         return all_items
 
     def nextrecordings(self):
-        ''' get all recordings '''
+        """ get all recordings """
         return self.recordings(True)
 
     def timers(self):
-        '''get pvr timers'''
+        """get pvr timers"""
         all_items = []
         if xbmc.getCondVisibility("Pvr.HasTVChannels"):
             # only add timers which have a broadcast date
@@ -129,8 +129,7 @@ class Pvr(object):
         return all_items
 
     def process_channel(self, channeldata):
-        '''transform the json received from kodi into something we can use'''
-        item = {}
+        """transform the json received from kodi into something we can use"""
         channelname = channeldata["label"]
         channellogo = self.metadatautils.get_clean_image(channeldata['thumbnail'])
         if channeldata.get('broadcastnow'):
@@ -164,7 +163,7 @@ class Pvr(object):
         return item
 
     def process_recording(self, item):
-        '''transform the json received from kodi into something we can use'''
+        """transform the json received from kodi into something we can use"""
         if self.enable_artwork:
             self.metadatautils.extend_dict(item, self.metadatautils.get_pvr_artwork(item["title"], item["channel"]))
         item["type"] = "recording"
@@ -181,7 +180,7 @@ class Pvr(object):
         return item
 
     def process_timer(self, item):
-        '''transform the json received from kodi into something we can use'''
+        """transform the json received from kodi into something we can use"""
         item["file"] = "plugin://script.skin.helper.service/?action=launch&path=" + \
             quote_plus("ReplaceWindow(tvtimers),return")
         if not item["channelid"] == -1:

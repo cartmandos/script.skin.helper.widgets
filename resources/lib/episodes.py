@@ -1,11 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-'''
+"""
     script.skin.helper.widgets
     episodes.py
     all episodes widgets provided by the script
-'''
+"""
 
 from utils import create_main_entry
 from operator import itemgetter
@@ -13,13 +13,13 @@ from metadatautils import kodi_constants
 import xbmc
 
 class Episodes(object):
-    '''all episode widgets provided by the script'''
+    """all episode widgets provided by the script"""
     options = {}
     kodidb = None
     addon = None
 
     def __init__(self, addon, metadatautils, options):
-        '''Initialization'''
+        """Initialization"""
         self.addon = addon
         self.metadatautils = metadatautils
         options["next_inprogress_only"] = self.addon.getSetting("nextup_inprogressonly") == "true"
@@ -28,7 +28,7 @@ class Episodes(object):
         self.options = options
 
     def listing(self):
-        '''main listing with all our episode nodes'''
+        """main listing with all our episode nodes"""
         all_items = [
             (self.addon.getLocalizedString(32027), "inprogress&mediatype=episodes", "DefaultTvShows.png"),
             (self.addon.getLocalizedString(32002), "next&mediatype=episodes", "DefaultTvShows.png"),
@@ -45,17 +45,17 @@ class Episodes(object):
         return self.metadatautils.process_method_on_list(create_main_entry, all_items)
 
     def favourites(self):
-        '''get favourites'''
+        """get favourites"""
         from favourites import Favourites
         self.options["mediafilter"] = "episodes"
         return Favourites(self.addon, self.metadatautils, self.options).favourites()
 
     def favourite(self):
-        '''synonym to favourites'''
+        """synonym to favourites"""
         return self.favourites()
 
     def recommended(self):
-        ''' get recommended episodes - library episodes with score higher than 7 '''
+        """ get recommended episodes - library episodes with score higher than 7 """
         filters = [kodi_constants.FILTER_RATING]
         if self.options["hide_watched"]:
             filters.append(kodi_constants.FILTER_UNWATCHED)
@@ -63,7 +63,7 @@ class Episodes(object):
                                                   limits=(0, self.options["limit"]))
 
     def recent(self):
-        ''' get recently added episodes '''
+        """ get recently added episodes """
         tvshow_episodes = {}
         total_count = 0
         unique_count = 0
@@ -101,7 +101,7 @@ class Episodes(object):
         return sorted(all_items, key=itemgetter("dateadded"), reverse=True)[:self.options["limit"]]
 
     def random(self):
-        ''' get random episodes '''
+        """ get random episodes """
         filters = []
         if self.options["hide_watched"]:
             filters.append(kodi_constants.FILTER_UNWATCHED)
@@ -113,7 +113,7 @@ class Episodes(object):
                                                   limits=(0, self.options["limit"]))
 
     def inprogress(self):
-        ''' get in progress episodes '''
+        """ get in progress episodes """
         filters = [kodi_constants.FILTER_INPROGRESS]
         if self.options.get("tag"):
             filters.append({"operator": "contains", "field": "tag", "value": self.options["tag"]})
@@ -123,7 +123,7 @@ class Episodes(object):
                                                   limits=(0, self.options["limit"]))
 
     def inprogressandrecommended(self):
-        ''' get recommended AND in progress episodes '''
+        """ get recommended AND in progress episodes """
         all_items = self.inprogress()
         all_titles = [item["title"] for item in all_items]
         for item in self.recommended():
@@ -132,7 +132,7 @@ class Episodes(object):
         return all_items[:self.options["limit"]]
 
     def inprogressandrandom(self):
-        ''' get recommended AND random episodes '''
+        """ get recommended AND random episodes """
         all_items = self.inprogress()
         all_ids = [item["episodeid"] for item in all_items]
         for item in self.random():
@@ -141,7 +141,7 @@ class Episodes(object):
         return all_items[:self.options["limit"]]
 
     def next(self):
-        ''' get next episodes '''
+        """ get next episodes """
         filters = [kodi_constants.FILTER_UNWATCHED]
         if self.options["next_inprogress_only"]:
             filters = [kodi_constants.FILTER_INPROGRESS]
@@ -156,11 +156,11 @@ class Episodes(object):
                                                          d['tvshowid'] for d in all_shows])
 
     def get_next_episode_for_show(self, show_id):
-        '''
+        """
         get last played watched episode for show,
         return next unwatched episode after that,
         unless nothing after that, then return first episode
-        '''
+        """
         filters = []
         fields = ["playcount", "season"]
         next_episode = None
@@ -198,9 +198,8 @@ class Episodes(object):
         # return full details for our episode
         return self.metadatautils.kodidb.episode(next_episode["episodeid"]) if next_episode else None
 
-
     def unaired(self):
-        ''' get all unaired episodes for shows in the library - provided by tvdb module'''
+        """ get all unaired episodes for shows in the library - provided by tvdb module"""
         self.metadatautils.thetvdb.days_ahead = 120
 
         filters = [kodi_constants.FILTER_UNWATCHED]
@@ -220,7 +219,7 @@ class Episodes(object):
         return [self.map_episode_props(episode) for episode in episodes]
 
     def nextaired(self, days_ahead=60):
-        ''' get all next airing episodes for shows in the library - provided by tvdb module'''
+        """ get all next airing episodes for shows in the library - provided by tvdb module"""
         self.metadatautils.thetvdb.days_ahead = days_ahead
 
         filters = [kodi_constants.FILTER_UNWATCHED]
@@ -239,12 +238,12 @@ class Episodes(object):
         return [self.map_episode_props(episode) for episode in episodes]
 
     def airingtoday(self):
-        ''' get today airing episodes - provided by tvdb module'''
+        """ get today airing episodes - provided by tvdb module"""
         return self.nextaired(0)
 
     @staticmethod
     def create_grouped_entry(tvshow_episodes):
-        '''helper for grouped episodes'''
+        """helper for grouped episodes"""
         firstepisode = tvshow_episodes[0]
         if len(tvshow_episodes) > 2:
             # add as season entry if there were multiple episodes for the same show
@@ -263,7 +262,7 @@ class Episodes(object):
 
     @staticmethod
     def map_episode_props(episode_details):
-        ''''adds some of the optional fields as extra properties for the listitem'''
+        """'adds some of the optional fields as extra properties for the listitem"""
         extraprops = {}
         for item in ["network", "airdate", "airdate.label", "airtime", "airdatetime", "airdatetime.label", "airday"]:
             extraprops[item] = episode_details[item]

@@ -1,11 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-'''
+"""
     script.skin.helper.widgets
     favourites.py
     all favourites widgets provided by the script
-'''
+"""
 
 from utils import create_main_entry
 import xbmc
@@ -14,10 +14,10 @@ from urllib import quote_plus
 
 
 class Favourites(object):
-    '''all favourites widgets provided by the script'''
+    """all favourites widgets provided by the script"""
 
     def __init__(self, addon, metadatautils, options):
-        '''Initializations pass our common classes and the widget options as arguments'''
+        """Initializations pass our common classes and the widget options as arguments"""
         self.metadatautils = metadatautils
         self.addon = addon
         self.options = options
@@ -25,7 +25,7 @@ class Favourites(object):
         self.browse_album = self.addon.getSetting("music_browse_album") == "true"
 
     def listing(self):
-        '''main listing with only our favourites nodes'''
+        """main listing with only our favourites nodes"""
         all_items = [
             (xbmc.getLocalizedString(10134),
              "favourites&mediatype=favourites",
@@ -36,7 +36,7 @@ class Favourites(object):
         return self.metadatautils.process_method_on_list(create_main_entry, all_items)
 
     def favourites(self):
-        '''show kodi favourites'''
+        """show kodi favourites"""
         all_items = []
         media_filter = self.options.get("mediafilter", "")
 
@@ -76,7 +76,7 @@ class Favourites(object):
         return all_items
 
     def find_window_match(self, fav, media_filter):
-        '''try to get a match for tvshow or album favourites listing'''
+        """try to get a match for tvshow or album favourites listing"""
         match = {}
         # check for tvshow
         if not media_filter or media_filter == "tvshows":
@@ -128,7 +128,7 @@ class Favourites(object):
         return match
 
     def find_media_match(self, fav, media_filter):
-        ''' try to get a match for movie/episode/song/musicvideo for favourite'''
+        """ try to get a match for movie/episode/song/musicvideo for favourite"""
         match = {}
         # apparently only the filepath can be used for the search
         filename = fav["path"]
@@ -166,8 +166,7 @@ class Favourites(object):
 
     @staticmethod
     def find_other_match(fav):
-        '''create listitem for any other item in favourites'''
-        item = {}
+        """create listitem for any other item in favourites"""
         is_folder = False
         if fav["type"] == "window":
             media_path = fav["windowparameter"]

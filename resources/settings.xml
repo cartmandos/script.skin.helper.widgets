@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
-    <!-- common-->
-    <category label="32163">
+    <!-- general -->
+    <category label="32082">
         <setting id="hide_watched" type="bool" label="32035" default="false"/>
         <setting id="hide_watched_recent" type="bool" label="32067" default="true"/>
         <setting id="hide_watched_similar" type="bool" label="32073" default="true"/>
         <setting id="default_limit" type="number" label="32053" default="25"/>
         <setting id="num_recent_similar" type="number" label="32072" default="8"/>
         <setting id="aggresive_refresh" type="bool" label="32071" default="false"/>
-        <setting id="exp_recommended" type="bool" label="32074" default="false"/>
+        <setting id="exp_recommended" type="bool" label="32074" default="true"/>
+        <setting id="mylist" type="bool" label="32093" default="false"/>
     </category>
     <!-- episodes -->
     <category label="$LOCALIZE[20360]">

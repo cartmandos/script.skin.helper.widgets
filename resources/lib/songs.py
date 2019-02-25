@@ -1,11 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-'''
+"""
     script.skin.helper.widgets
     songs.py
     all songs widgets provided by the script
-'''
+"""
 
 from utils import create_main_entry
 from operator import itemgetter
@@ -14,17 +14,17 @@ import xbmc
 
 
 class Songs(object):
-    '''all song widgets provided by the script'''
+    """all song widgets provided by the script"""
 
     def __init__(self, addon, metadatautils, options):
-        '''Initializations pass our common classes and the widget options as arguments'''
+        """Initializations pass our common classes and the widget options as arguments"""
         self.metadatautils = metadatautils
         self.addon = addon
         self.options = options
         self.enable_artwork = self.addon.getSetting("music_enable_artwork") == "true"
 
     def listing(self):
-        '''main listing with all our song nodes'''
+        """main listing with all our song nodes"""
         all_items = [
             (self.addon.getLocalizedString(32013), "recentplayed&mediatype=songs", "DefaultMusicSongs.png"),
             (self.addon.getLocalizedString(32012), "recent&mediatype=songs", "DefaultMusicSongs.png"),
@@ -36,24 +36,24 @@ class Songs(object):
         return self.metadatautils.process_method_on_list(create_main_entry, all_items)
 
     def favourites(self):
-        '''get favourites'''
+        """get favourites"""
         from favourites import Favourites
         self.options["mediafilter"] = "songs"
         return Favourites(self.addon, self.metadatautils, self.options).favourites()
 
     def favourite(self):
-        '''synonym to favourites'''
+        """synonym to favourites"""
         return self.favourites()
 
     def recommended(self):
-        ''' get recommended songs - library songs with score higher than 7 '''
+        """ get recommended songs - library songs with score higher than 7 """
         filters = [kodi_constants.FILTER_RATING_MUSIC]
         items = self.metadatautils.kodidb.songs(sort=kodi_constants.SORT_RATING, filters=filters,
                                            limits=(0, self.options["limit"]))
         return self.metadatautils.process_method_on_list(self.process_song, items)
 
     def recent(self):
-        ''' get recently added songs '''
+        """ get recently added songs """
         items = self.metadatautils.kodidb.get_json(
             "AudioLibrary.GetRecentlyAddedSongs",
             filters=[],
@@ -65,19 +65,19 @@ class Songs(object):
         return self.metadatautils.process_method_on_list(self.process_song, items)
 
     def random(self):
-        ''' get random songs '''
+        """ get random songs """
         items = self.metadatautils.kodidb.songs(sort=kodi_constants.SORT_RANDOM, filters=[],
                                            limits=(0, self.options["limit"]))
         return self.metadatautils.process_method_on_list(self.process_song, items)
 
     def recentplayed(self):
-        ''' get in progress songs '''
+        """ get in progress songs """
         items = self.metadatautils.kodidb.songs(sort=kodi_constants.SORT_LASTPLAYED, filters=[],
                                            limits=(0, self.options["limit"]))
         return self.metadatautils.process_method_on_list(self.process_song, items)
 
     def similar(self):
-        ''' get similar songs for recent played song'''
+        """ get similar songs for recent played song"""
         all_items = []
         all_titles = list()
         ref_song = self.get_random_played_song()
@@ -100,7 +100,7 @@ class Songs(object):
         return self.metadatautils.process_method_on_list(self.process_song, items)
 
     def get_random_played_song(self):
-        '''gets a random played song from kodi_constants.'''
+        """gets a random played song from kodi_constants."""
         songs = self.metadatautils.kodidb.songs(sort=kodi_constants.SORT_RANDOM,
                                            filters=[kodi_constants.FILTER_WATCHED], limits=(0, 1))
         if songs:
@@ -109,12 +109,12 @@ class Songs(object):
             return None
 
     def get_genre_songs(self, genre, limit=100):
-        '''helper method to get all songs in a specific genre'''
+        """helper method to get all songs in a specific genre"""
         filters = [{"operator": "contains", "field": "genre", "value": genre}]
         return self.metadatautils.kodidb.songs(sort=kodi_constants.SORT_RANDOM, filters=filters, limits=(0, limit))
 
     def process_song(self, item):
-        '''additional actions on a song item'''
+        """additional actions on a song item"""
         if self.enable_artwork:
             self.metadatautils.extend_dict(item, self.metadatautils.get_music_artwork(item["artist"][0],
                                                               item["album"], item["title"], str(item["disc"])))
