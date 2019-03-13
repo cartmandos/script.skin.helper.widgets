@@ -356,16 +356,14 @@ class Movies(object):
                                                       filters=[kodi_constants.FILTER_WATCHED],
                                                       limits=(0, self.options["num_recent_similar"]))
         # average scores together for every item
-        for item in all_items:
-            similarscore = 0
-            for ref_movie in ref_movies:
-                similarscore += self.get_similarity_score(ref_movie, item)
-            if ref_movies:
+        if ref_movies:
+            for item in all_items:
+                similarscore = 0
+                for ref_movie in ref_movies:
+                    similarscore += self.get_similarity_score(ref_movie, item)
                 item["recommendedscore"] = similarscore / (1 + item["playcount"]) / len(ref_movies)
-            else:
-                item["recommendedscore"] = 0
-        # return list sorted by score and capped by limit
-        return sorted(all_items, key=itemgetter("recommendedscore"), reverse=True)[:self.options["limit"]]
+            # return list sorted by score and capped by limit
+            return sorted(all_items, key=itemgetter("recommendedscore"), reverse=True)[:self.options["limit"]]
 
     @staticmethod
     def get_similarity_score(ref_movie, other_movie, set_genres=None, set_directors=None,

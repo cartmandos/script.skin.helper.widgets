@@ -405,13 +405,14 @@ class Tvshows(object):
                                                       filters=[kodi_constants.FILTER_WATCHED],
                                                       limits=(0, self.options["num_recent_similar"]))
         # average scores together for every item
-        for item in all_items:
-            similarscore = 0
-            for ref_show in ref_shows:
-                similarscore += self.get_similarity_score(ref_show, item)
-            item["recommendedscore"] = similarscore / (1 + item["playcount"]) / len(ref_shows)
-        # return sorted list capped by limit
-        return sorted(all_items, key=itemgetter("recommendedscore"), reverse=True)[:self.options["limit"]]
+        if ref_shows:
+            for item in all_items:
+                similarscore = 0
+                for ref_show in ref_shows:
+                    similarscore += self.get_similarity_score(ref_show, item)
+                item["recommendedscore"] = similarscore / (1 + item["playcount"]) / len(ref_shows)
+            # return sorted list capped by limit
+            return sorted(all_items, key=itemgetter("recommendedscore"), reverse=True)[:self.options["limit"]]
 
     @staticmethod
     def get_similarity_score(ref_show, other_show, set_genres=None, set_cast=None):

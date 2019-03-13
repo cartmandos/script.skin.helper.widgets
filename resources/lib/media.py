@@ -126,7 +126,7 @@ class Media(object):
                 if movie_tag["label"] == tv_tag["label"]:
                     details = (
                         movie_tag["label"], "listing&mediatype=media&tag=%s" % movie_tag["label"],
-                        ICON_IMAGE_TAGS)
+                        Media.ICON_IMAGE_TAGS)
                     all_items.append(create_main_entry(details))
                     # no need to iterate rest of tvshow's tags since match is found -> build entry
                     break
@@ -224,10 +224,12 @@ class Media(object):
                 genre = media_genres[randint(0, len(media_genres) - 1)]
         all_items = []
         if genre:
-            for item in self.movies.get_genre_movies(genre, self.options["hide_watched"], self.options["limit"]):
+            for item in self.tvshows.get_genre_tvshows(genre, self.options["hide_watched"], self.options["limit"]):
                 item["extraproperties"] = {"genretitle": genre, "originalpath": item["file"]}
                 all_items.append(item)
-            for item in self.tvshows.get_genre_tvshows(genre, self.options["hide_watched"], self.options["limit"]):
+            # proccess tvshows before adding movies
+            all_items = self.metadatautils.process_method_on_list(self.tvshows.process_tvshow, all_items)
+            for item in self.movies.get_genre_movies(genre, self.options["hide_watched"], self.options["limit"]):
                 item["extraproperties"] = {"genretitle": genre, "originalpath": item["file"]}
                 all_items.append(item)
         # return the list sorted random capped by limit
@@ -430,7 +432,8 @@ class Media(object):
         if self.options["exp_recommended"]:
             # get ref item, and check if movie
             ref_item = self.get_recently_watched_item()
-            is_ref_movie = "uniqueid" in ref_item
+            if ref_item:
+                is_ref_movie = "uniqueid" in ref_item
             # create list of all items
             if self.options["hide_watched_similar"]:
                 all_items = self.metadatautils.kodidb.movies(filters=[kodi_constants.FILTER_UNWATCHED])
@@ -506,24 +509,24 @@ class Media(object):
         else:
             all_refs = self.get_references_last_played()
         # average scores together for every item
-        for item in all_items:
-            similarscore = 0
-            for ref_item in all_refs:
-                # add all similarscores for item
-                if "uniqueid" in ref_item and "uniqueid" in item:
-                    # use movies method if both items are movies
-                    similarscore += self.movies.get_similarity_score(ref_item, item)
-                elif "uniqueid" in ref_item or "uniqueid" in item:
-                    # use media method if only one item is a movie
-                    similarscore += self.get_similarity_score(ref_item, item)
-                else:
-                    # use tvshows method if neither items are movies
-                    similarscore += self.tvshows.get_similarity_score(ref_item, item)
+        if all_refs:
+            for item in all_items:
+                similarscore = 0
+                for ref_item in all_refs:
+                    # add all similarscores for item
+                    if "uniqueid" in ref_item and "uniqueid" in item:
+                        # use movies method if both items are movies
+                        similarscore += self.movies.get_similarity_score(ref_item, item)
+                    elif "uniqueid" in ref_item or "uniqueid" in item:
+                        # use media method if only one item is a movie
+                        similarscore += self.get_similarity_score(ref_item, item)
+                    else:
+                        # use tvshows method if neither items are movies
+                        similarscore += self.tvshows.get_similarity_score(ref_item, item)
 
-            item["recommendedscore"] = similarscore / (1 + item["playcount"]) / len(all_refs)
-            # item["extraproperties"] = {"similarscore": str(similarscore)}
-        # return sorted list capped by limit
-        return sorted(all_items, key=itemgetter("recommendedscore"), reverse=True)[:self.options["limit"]]
+                item["recommendedscore"] = similarscore / (1 + item["playcount"]) / len(all_refs)
+            # return sorted list capped by limit
+            return sorted(all_items, key=itemgetter("recommendedscore"), reverse=True)[:self.options["limit"]]
 
     def get_references_last_played(self):
         """ sort list of mixed movies/tvshows by recommended score"""
@@ -543,7 +546,7 @@ class Media(object):
         # get recently watched items
         num_recent_similar = self.options["num_recent_similar"] + 1
         # get random values for pools
-        first_pool = randint(1, num_recent_similar)
+        first_pool = randint(1, num_recent_similar-1)
         second_pool = randint(1, num_recent_similar - first_pool)
 
         # first pool
