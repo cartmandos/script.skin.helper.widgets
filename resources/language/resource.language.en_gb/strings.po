@@ -33,7 +33,7 @@ msgid "Recommended Movies"
 msgstr ""
 
 msgctxt "#32004"
-msgid "Top Rated Media"
+msgid "Critically-acclaimed Movies and TV Shows"
 msgstr ""
 
 msgctxt "#32005"
@@ -165,7 +165,7 @@ msgid "Only use in-progress shows in next episodes widget"
 msgstr ""
 
 msgctxt "#32037"
-msgid "Recommended Tv Shows"
+msgid "Recommended TV Shows"
 msgstr ""
 
 msgctxt "#32038"
@@ -348,7 +348,9 @@ msgctxt "#32082"
 msgid "General"
 msgstr ""
 
-# empty string 32083 id
+msgctxt "#32083"
+msgid "Criticially-acclaimed in Movies"
+msgstr ""
 
 msgctxt "#32084"
 msgid "Recommended Movies and TV Shows"
@@ -400,4 +402,12 @@ msgstr ""
 
 msgctxt "#32096"
 msgid "TV Shows in My List"
+msgstr ""
+
+msgctxt "#32097"
+msgid "Criticially-acclaimed in TV Shows"
+msgstr ""
+
+msgctxt "#32098"
+msgid "Categories"
 msgstr ""

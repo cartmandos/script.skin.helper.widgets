@@ -23,7 +23,7 @@ import xbmc
 class Media(object):
     """all media (mixed) widgets provided by the script"""
 
-    ICON_IMAGE_DEFAULT = "DefaultMovies.png"
+    ICON_IMAGE_MOVIES = "DefaultMovies.png"
     ICON_IMAGE_TVSHOWS = "DefaultTvShows.png"
     ICON_IMAGE_TAGS = "DefaultTags.png"
     MOVIES_TAGS_PATH = "videodb://movies/tags"
@@ -59,58 +59,60 @@ class Media(object):
 
         all_items = [
             (label_prefix + self.addon.getLocalizedString(32011), "inprogress&mediatype=media&tag=%s"
-             % tag, Media.ICON_IMAGE_DEFAULT),
+             % tag, Media.ICON_IMAGE_MOVIES),
             (label_prefix + self.addon.getLocalizedString(32070),
-             "inprogressshowsandmovies&mediatype=media&tag=%s" % tag, Media.ICON_IMAGE_DEFAULT),
+             "inprogressshowsandmovies&mediatype=media&tag=%s" % tag, Media.ICON_IMAGE_MOVIES),
             (label_prefix + self.addon.getLocalizedString(32080),
-             "inprogressepisodesandmovies&mediatype=media&tag=%s" % tag, Media.ICON_IMAGE_DEFAULT),
+             "inprogressepisodesandmovies&mediatype=media&tag=%s" % tag, Media.ICON_IMAGE_MOVIES),
             (label_prefix + self.addon.getLocalizedString(32005), "recent&mediatype=media&tag=%s"
-             % tag, Media.ICON_IMAGE_DEFAULT),
+             % tag, Media.ICON_IMAGE_MOVIES),
             (label_prefix + self.addon.getLocalizedString(32078), "recentshowsandmovies&mediatype=media&tag=%s"
-             % tag, Media.ICON_IMAGE_DEFAULT),
+             % tag, Media.ICON_IMAGE_MOVIES),
             (label_prefix + self.addon.getLocalizedString(32059), "random&mediatype=media&tag=%s"
-             % tag, Media.ICON_IMAGE_DEFAULT),
+             % tag, Media.ICON_IMAGE_MOVIES),
             (label_prefix + self.addon.getLocalizedString(32079), "randomshowsandmovies&mediatype=media&tag=%s"
-             % tag, Media.ICON_IMAGE_DEFAULT),
+             % tag, Media.ICON_IMAGE_MOVIES),
             (label_prefix + self.addon.getLocalizedString(32088), "unwatchedshowsandmovies&mediatype=media&tag=%s"
-             % tag, Media.ICON_IMAGE_DEFAULT),
+             % tag, Media.ICON_IMAGE_MOVIES),
             (label_prefix + self.addon.getLocalizedString(32086), "watchagainshowsandmovies&mediatype=media&tag=%s"
-             % tag, Media.ICON_IMAGE_DEFAULT),
+             % tag, Media.ICON_IMAGE_MOVIES),
             (label_prefix + self.addon.getLocalizedString(32087), "newrelease&mediatype=media&tag=%s"
-             % tag, Media.ICON_IMAGE_DEFAULT),
+             % tag, Media.ICON_IMAGE_MOVIES),
             (label_prefix + self.addon.getLocalizedString(32058), "top250&mediatype=media&tag=%s"
-             % tag, Media.ICON_IMAGE_DEFAULT),
+             % tag, Media.ICON_IMAGE_MOVIES),
             (label_prefix + self.addon.getLocalizedString(32081), "randomtop250&mediatype=media&tag=%s"
-             % tag, Media.ICON_IMAGE_DEFAULT),
-            (label_prefix + self.addon.getLocalizedString(32004), "recommended&mediatype=media&tag=%s"
-             % tag, Media.ICON_IMAGE_DEFAULT)
+             % tag, Media.ICON_IMAGE_MOVIES),
+            (label_prefix + self.addon.getLocalizedString(32004), "toprated&mediatype=media&tag=%s"
+             % tag, Media.ICON_IMAGE_MOVIES)
         ]
         if exp_setting:
             all_items += [
                 (label_prefix + self.addon.getLocalizedString(32084), "recommendedmoviesandshows&mediatype=media&tag=%s"
-                 % tag, Media.ICON_IMAGE_DEFAULT),
+                 % tag, Media.ICON_IMAGE_MOVIES),
                 (label_prefix + self.addon.getLocalizedString(32085), "toppicks&mediatype=media&tag=%s"
-                 % tag, Media.ICON_IMAGE_DEFAULT)
+                 % tag, Media.ICON_IMAGE_MOVIES)
             ]
             if not tag:
                 all_items += [
-                    (self.addon.getLocalizedString(32022), "similar&mediatype=media", Media.ICON_IMAGE_DEFAULT)
+                    (self.addon.getLocalizedString(32022), "similar&mediatype=media", Media.ICON_IMAGE_MOVIES)
                 ]
         if mylist_setting:
             all_items += [
-                (self.addon.getLocalizedString(32094), "mylist&mediatype=media", Media.ICON_IMAGE_DEFAULT)
+                (self.addon.getLocalizedString(32094), "mylist&mediatype=media", Media.ICON_IMAGE_MOVIES)
             ]
         if not tag:
             all_items += [
                 (self.addon.getLocalizedString(32007), "inprogressandrecommended&mediatype=media",
-                 Media.ICON_IMAGE_DEFAULT),
-                (self.addon.getLocalizedString(32060), "inprogressandrandom&mediatype=media", Media.ICON_IMAGE_DEFAULT),
-                (self.addon.getLocalizedString(32090), "popular&mediatype=media", Media.ICON_IMAGE_DEFAULT),
-                (self.addon.getLocalizedString(32089), "forgenre&mediatype=media", Media.ICON_IMAGE_DEFAULT),
-                (self.addon.getLocalizedString(32001), "favourites&mediatype=media", Media.ICON_IMAGE_DEFAULT),
+                 Media.ICON_IMAGE_MOVIES),
+                (self.addon.getLocalizedString(32060), "inprogressandrandom&mediatype=media", Media.ICON_IMAGE_MOVIES),
+                (self.addon.getLocalizedString(32090), "popular&mediatype=media", Media.ICON_IMAGE_MOVIES),
+                (self.addon.getLocalizedString(32089), "forgenre&mediatype=media", Media.ICON_IMAGE_MOVIES),
+                (xbmc.getLocalizedString(135), "browsegenres&mediatype=media", "DefaultGenres.png"),
+                (self.addon.getLocalizedString(32098), "categories&mediatype=media", Media.ICON_IMAGE_MOVIES),
+                (self.addon.getLocalizedString(32001), "favourites&mediatype=media", Media.ICON_IMAGE_MOVIES),
                 (self.addon.getLocalizedString(32075), "playlistslisting&mediatype=media&movie_label=",
-                 Media.ICON_IMAGE_DEFAULT),
-                (xbmc.getLocalizedString(20459), "tagslisting&mediatype=media", Media.ICON_IMAGE_DEFAULT)
+                 Media.ICON_IMAGE_MOVIES),
+                (xbmc.getLocalizedString(20459), "tagslisting&mediatype=media", Media.ICON_IMAGE_MOVIES)
             ]
         return self.metadatautils.process_method_on_list(create_main_entry, all_items)
 
@@ -141,7 +143,7 @@ class Media(object):
         if movie_label and tv_label:
             # got both playlist -> let's build sort methods entries from const list
             return [create_main_entry((sort_method, "playlist&mediatype=media&movie_label=%s&tv_label=%s&sort=%s" %
-                                       (movie_label, tv_label, sort_method), Media.ICON_IMAGE_DEFAULT)) for sort_method
+                                       (movie_label, tv_label, sort_method), Media.ICON_IMAGE_MOVIES)) for sort_method
                     in Media.PLAYLIST_SORT_OPTIONS]
         all_items = []
         all_playlists = self.metadatautils.kodidb.files(Media.KODI_USER_PLAYLISTS_PATH) \
@@ -156,7 +158,7 @@ class Media(object):
             else:
                 # both labels are empty -> build playlist entries for movies
                 details = (item["label"], "playlistslisting&mediatype=media&movie_label=%s" % label,
-                           Media.ICON_IMAGE_DEFAULT)
+                           Media.ICON_IMAGE_MOVIES)
             all_items.append(create_main_entry(details))
         return all_items
 
@@ -195,7 +197,35 @@ class Media(object):
 
     def categories(self):
         """not ready"""
-        return self.metadatautils.kodidb.files("special://skin/playlists/")
+        all_items = []
+        all_items += self.browsegenres()
+        all_items += [{"art": {}, "label": "movies", "title": xbmc.getLocalizedString(342),
+                       "file": "videodb://movies/titles/",
+                       "isFolder": True, "IsPlayable": "false", "thumbnail": Media.ICON_IMAGE_MOVIES, "type": "categorie"}]
+        all_items += [{"art": {}, "label": "tvshows", "title": xbmc.getLocalizedString(20343),
+                       "file": "videodb://tvshows/titles/",
+                       "isFolder": True, "IsPlayable": "false", "thumbnail": Media.ICON_IMAGE_TVSHOWS, "type": "categorie"}]
+        all_items += [
+            {"art": {}, "label": "topratedmovies", "title": self.addon.getLocalizedString(32083),
+             "file": u"plugin://script.skin.helper.widgets/?action=toprated&mediatype=movies&limit=100",
+             "isFolder": True, "IsPlayable": "false", "thumbnail": Media.ICON_IMAGE_MOVIES, "type": "categorie"}]
+        all_items += [
+            {"art": {}, "label": "topratedtvshows", "title": self.addon.getLocalizedString(32097),
+             "file": u"plugin://script.skin.helper.widgets/?action=toprated&mediatype=tvshows&limit=100",
+             "isFolder": True, "IsPlayable": "false", "thumbnail": Media.ICON_IMAGE_TVSHOWS, "type": "categorie"}]
+        all_items += [
+            {"art": {}, "label": "recentlyadded", "title": self.addon.getLocalizedString(32078),
+             "file": u"plugin://script.skin.helper.widgets/?action=recentshowsandmovies&mediatype=media&limit=100",
+             "isFolder": True, "IsPlayable": "false", "thumbnail": Media.ICON_IMAGE_MOVIES, "type": "categorie"}]
+        all_items += [
+            {"art": {}, "label": "newrelease", "title": self.addon.getLocalizedString(32087),
+             "file": u"plugin://script.skin.helper.widgets/?action=newrelease&mediatype=media&limit=100",
+             "isFolder": True, "IsPlayable": "false", "thumbnail": Media.ICON_IMAGE_MOVIES, "type": "categorie"}]
+        all_items += [
+            {"art": {}, "label": "popular", "title": self.addon.getLocalizedString(32090),
+             "file": u"plugin://script.skin.helper.widgets/?action=popular&mediatype=media&limit=100",
+             "isFolder": True, "IsPlayable": "false", "thumbnail": Media.ICON_IMAGE_MOVIES, "type": "categorie"}]
+        return sorted(all_items, key=lambda k: random())[:self.options["limit"]]
 
     def favourites(self):
         """get favourite media"""
@@ -235,14 +265,11 @@ class Media(object):
         # return the list sorted random capped by limit
         return sorted(all_items, key=lambda k: random())[:self.options["limit"]]
 
-    def recommended(self):
-        """get recommended mixed media"""
+    def toprated(self):
+        """get top rated mixed media"""
         all_items = []
-        all_items += self.movies.recommended()
-        all_items += self.tvshows.recommended()
-        all_items += self.albums.recommended()
-        all_items += self.songs.recommended()
-        all_items += self.episodes.recommended()
+        all_items += self.movies.toprated()
+        all_items += self.tvshows.toprated()
         return sorted(all_items, key=lambda k: random())[:self.options["limit"]]
 
     def recommendedmoviesandshows(self):
@@ -394,6 +421,45 @@ class Media(object):
         """ get random imdb top250 movies and tvshows in library """
         return sorted(self.get_top_250(), key=lambda k: random())[:self.options["limit"]]
 
+    def browsegenres(self):
+        """special entry which can be used to create custom genre listings
+            returns each genre with poster/fanart artwork properties from 5
+            random movies/tvshows in the genre."""
+        # find matches
+        movie_genres = self.metadatautils.kodidb.genres("movie")
+        tvshow_genres = self.metadatautils.kodidb.genres("tvshow")
+        media_genres = []
+        for movie_genre in movie_genres:
+            for tvshow_genre in tvshow_genres:
+                if movie_genre["label"] == tvshow_genre["label"]:
+                    media_genres.append(movie_genre["label"])
+                    break
+        # build genres
+        all_items = []
+        for genre in media_genres:
+            all_items.append(self.process_genre(genre))
+        return all_items
+
+    def process_genre(self, genre):
+        """method to create genre listitem from genre's label"""
+        genre_json = {"art": {}, "label": genre, "title": genre,
+                      "file": u"plugin://script.skin.helper.widgets/?action=forgenre&mediatype=media&genre=%s" % genre,
+                      "isFolder": True, "IsPlayable": "false", "thumbnail": "DefaultGenre.png", "type": "genre"}
+        # randomly select fanart/poster from tvshows OR movies
+        flip_coin = randint(0, 1)
+        if flip_coin:
+            genre_items = self.movies.get_genre_movies(genre, False, 5, kodi_constants.SORT_RANDOM)
+        else:
+            genre_items = self.tvshows.get_genre_tvshows(genre, False, 5, kodi_constants.SORT_RANDOM)
+        if genre_items:
+            for count, item in enumerate(genre_items):
+                genre_json["art"]["poster.%s" % count] = item["art"].get("poster", "")
+                genre_json["art"]["fanart.%s" % count] = item["art"].get("fanart", "")
+                if "fanart" not in genre_json["art"]:
+                    # set genre's primary fanart image to first movie fanart
+                    genre_json["art"]["fanart"] = item["art"].get("fanart", "")
+        return genre_json
+
     def get_top_250(self):
         """ get all imdb top250 movies and tv shows in library """
         all_items = self.movies.top250()
@@ -432,6 +498,7 @@ class Media(object):
         if self.options["exp_recommended"]:
             # get ref item, and check if movie
             ref_item = self.get_recently_watched_item()
+            is_ref_movie = False
             if ref_item:
                 is_ref_movie = "uniqueid" in ref_item
             # create list of all items
@@ -546,7 +613,7 @@ class Media(object):
         # get recently watched items
         num_recent_similar = self.options["num_recent_similar"] + 1
         # get random values for pools
-        first_pool = randint(1, num_recent_similar-1)
+        first_pool = randint(1, num_recent_similar - 1)
         second_pool = randint(1, num_recent_similar - first_pool)
 
         # first pool

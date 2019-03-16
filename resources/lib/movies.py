@@ -30,6 +30,7 @@ class Movies(object):
         """main listing with all our movie nodes"""
         tag = self.options.get("tag", "")
         mylist_setting = self.options["mylist"]
+        exp_setting = self.options["exp_recommended"]
         if tag:
             label_prefix = "%s - " % tag
         else:
@@ -41,7 +42,7 @@ class Movies(object):
              % tag, Movies.ICON_IMAGE_DEFAULT),
             (label_prefix + self.addon.getLocalizedString(32091), "newrelease&mediatype=movies&tag=%s"
              % tag, Movies.ICON_IMAGE_DEFAULT),
-            (label_prefix + self.addon.getLocalizedString(32003), "recommended&mediatype=movies&tag=%s"
+            (label_prefix + self.addon.getLocalizedString(32083), "toprated&mediatype=movies&tag=%s"
              % tag, Movies.ICON_IMAGE_DEFAULT),
             (label_prefix + self.addon.getLocalizedString(32029),
              "inprogressandrecommended&mediatype=movies&tag=%s" % tag, Movies.ICON_IMAGE_DEFAULT),
@@ -57,6 +58,11 @@ class Movies(object):
         if mylist_setting:
             all_items += [
                 (self.addon.getLocalizedString(32095), "mylist&mediatype=movies", Movies.ICON_IMAGE_DEFAULT)
+            ]
+        if exp_setting:
+            all_items += [
+                (label_prefix + self.addon.getLocalizedString(32003), "recommended&mediatype=movies&tag=%s"
+                 % tag, Movies.ICON_IMAGE_DEFAULT),
             ]
         if not tag:
             all_items += [
@@ -98,25 +104,25 @@ class Movies(object):
         # return list sorted by recommended score
         return self.sort_by_recommended(all_items)
 
+    def toprated(self):
+        """ library movies with score higher than 7"""
+        filters = [kodi_constants.FILTER_RATING]
+        if self.options["hide_watched"]:
+            filters.append(kodi_constants.FILTER_UNWATCHED)
+        if self.options.get("tag"):
+            filters.append({"operator": "contains", "field": "tag", "value": self.options["tag"]})
+        return self.metadatautils.kodidb.movies(sort=kodi_constants.SORT_RATING, filters=filters,
+                                                limits=(0, self.options["limit"]))
+
     def recommended(self):
-        """ get recommended movies - library movies with score higher than 7
-        or if using experimental settings - similar with all recently watched """
-        if self.options["exp_recommended"]:
-            # get list of all unwatched movies (optionally filtered by tag)
-            filters = [kodi_constants.FILTER_UNWATCHED]
-            if self.options.get("tag"):
-                filters.append({"operator": "contains", "field": "tag", "value": self.options["tag"]})
-            all_items = self.metadatautils.kodidb.movies(filters=filters)
-            # return list sorted by recommended score
-            return self.sort_by_recommended(all_items)
-        else:
-            filters = [kodi_constants.FILTER_RATING]
-            if self.options["hide_watched"]:
-                filters.append(kodi_constants.FILTER_UNWATCHED)
-            if self.options.get("tag"):
-                filters.append({"operator": "contains", "field": "tag", "value": self.options["tag"]})
-            return self.metadatautils.kodidb.movies(sort=kodi_constants.SORT_RATING, filters=filters,
-                                                    limits=(0, self.options["limit"]))
+        """similar with all recently watched"""
+        # get list of all unwatched movies (optionally filtered by tag)
+        filters = [kodi_constants.FILTER_UNWATCHED]
+        if self.options.get("tag"):
+            filters.append({"operator": "contains", "field": "tag", "value": self.options["tag"]})
+        all_items = self.metadatautils.kodidb.movies(filters=filters)
+        # return list sorted by recommended score
+        return self.sort_by_recommended(all_items)
 
     def mylist(self):
         """ get mylist """

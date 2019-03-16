@@ -30,6 +30,7 @@ class Tvshows(object):
         """main listing with all our tvshow nodes"""
         tag = self.options.get("tag", "")
         mylist_setting = self.options["mylist"]
+        exp_setting = self.options["exp_recommended"]
         if tag:
             label_prefix = u"%s - " % tag
         else:
@@ -41,7 +42,7 @@ class Tvshows(object):
              % tag, Tvshows.ICON_IMAGE_DEFAULT),
             (label_prefix + self.addon.getLocalizedString(32092), "newrelease&mediatype=tvshows&tag=%s"
              % tag, Tvshows.ICON_IMAGE_DEFAULT),
-            (label_prefix + self.addon.getLocalizedString(32037), "recommended&mediatype=tvshows&tag=%s"
+            (label_prefix + self.addon.getLocalizedString(32097), "toprated&mediatype=tvshows&tag=%s"
              % tag, Tvshows.ICON_IMAGE_DEFAULT),
             (label_prefix + self.addon.getLocalizedString(32041), "random&mediatype=tvshows&tag=%s"
              % tag, Tvshows.ICON_IMAGE_DEFAULT),
@@ -53,6 +54,11 @@ class Tvshows(object):
         if mylist_setting:
             all_items += [
                 (self.addon.getLocalizedString(32096), "mylist&mediatype=tvshows", Tvshows.ICON_IMAGE_DEFAULT)
+            ]
+        if exp_setting:
+            all_items += [
+                (label_prefix + self.addon.getLocalizedString(32037), "recommended&mediatype=tvshows&tag=%s"
+                 % tag, Tvshows.ICON_IMAGE_DEFAULT),
             ]
         if not tag:
             all_items += [
@@ -127,29 +133,29 @@ class Tvshows(object):
         all_items = self.metadatautils.process_method_on_list(self.process_tvshow, all_items)
         return all_items
 
+    def toprated(self):
+        """ get recommended tvshows - library tvshows with score higher than 7"""
+        filters = [kodi_constants.FILTER_RATING]
+        if self.options["hide_watched"]:
+            filters.append(kodi_constants.FILTER_UNWATCHED)
+        if self.options.get("tag"):
+            filters.append({"operator": "contains", "field": "tag", "value": self.options["tag"]})
+        tvshows = self.metadatautils.kodidb.tvshows(
+            sort=kodi_constants.SORT_RATING, filters=filters, limits=(
+                0, self.options["limit"]))
+        return self.metadatautils.process_method_on_list(self.process_tvshow, tvshows)
+
     def recommended(self):
-        """ get recommended tvshows - library tvshows with score higher than 7
-        or if using experimental settings - similar with all recently watched """
-        if self.options["exp_recommended"]:
-            # get list of all unwatched movies (optionally filtered by tag)
-            filters = [kodi_constants.FILTER_UNWATCHED,
-                       {"operator": "false", "field": "inprogress", "value": ""}]
-            if self.options.get("tag"):
-                filters.append({"operator": "contains", "field": "tag", "value": self.options["tag"]})
-            all_items = self.metadatautils.kodidb.tvshows(filters=filters, filtertype='and')
-            all_items = self.sort_by_recommended(all_items)
-            # return processed show
-            return self.metadatautils.process_method_on_list(self.process_tvshow, all_items)
-        else:
-            filters = [kodi_constants.FILTER_RATING]
-            if self.options["hide_watched"]:
-                filters.append(kodi_constants.FILTER_UNWATCHED)
-            if self.options.get("tag"):
-                filters.append({"operator": "contains", "field": "tag", "value": self.options["tag"]})
-            tvshows = self.metadatautils.kodidb.tvshows(
-                sort=kodi_constants.SORT_RATING, filters=filters, limits=(
-                    0, self.options["limit"]))
-            return self.metadatautils.process_method_on_list(self.process_tvshow, tvshows)
+        """similar with all recently watched"""
+        # get list of all unwatched movies (optionally filtered by tag)
+        filters = [kodi_constants.FILTER_UNWATCHED,
+                   {"operator": "false", "field": "inprogress", "value": ""}]
+        if self.options.get("tag"):
+            filters.append({"operator": "contains", "field": "tag", "value": self.options["tag"]})
+        all_items = self.metadatautils.kodidb.tvshows(filters=filters, filtertype='and')
+        all_items = self.sort_by_recommended(all_items)
+        # return processed show
+        return self.metadatautils.process_method_on_list(self.process_tvshow, all_items)
 
     def recent(self):
         """ get recently added tvshows """
