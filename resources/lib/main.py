@@ -135,6 +135,8 @@ class Main(object):
         elif self.options["action"] == "playlist" and self.options["mediatype"] == "media":
             # if action is mixed playlist, use playlist labels
             cache_id = self.options.get("movie_label") + self.options.get("tv_label") + self.options.get("sort")
+        elif self.options["action"] == "forgenre" and "genre" in self.options:
+            cache_id = self.options.get("genre")
         else:
             # use tag otherwise
             cache_id = self.options.get("tag")
