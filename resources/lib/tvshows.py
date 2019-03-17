@@ -446,6 +446,7 @@ class Tvshows(object):
     @staticmethod
     def process_tvshow(item):
         """set optional details to tvshow item"""
+        item["extraproperties"] = {"originalpath": item["file"]}
         item["file"] = "videodb://tvshows/titles/%s" % item["tvshowid"]
         item["isFolder"] = True
         return item
