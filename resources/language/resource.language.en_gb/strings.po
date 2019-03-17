@@ -411,3 +411,59 @@ msgstr ""
 msgctxt "#32098"
 msgid "Categories"
 msgstr ""
+
+msgctxt "#32099"
+msgid "Enable Widgets from Extended Info Add-On"
+msgstr ""
+
+msgctxt "#32100"
+msgid "TMDB"
+msgstr ""
+
+msgctxt "#32101"
+msgid "Trakt"
+msgstr ""
+
+msgctxt "#32102"
+msgid "Trending Movies and TV Shows"
+msgstr ""
+
+msgctxt "#32103"
+msgid "Trending Movies"
+msgstr ""
+
+msgctxt "#32104"
+msgid "Trending TV Shows"
+msgstr ""
+
+msgctxt "#32105"
+msgid "Most Played Movies and TV Shows"
+msgstr ""
+
+msgctxt "#32106"
+msgid "Most Played Movies"
+msgstr ""
+
+msgctxt "#32107"
+msgid "Most Played TV Shows"
+msgstr ""
+
+msgctxt "#32108"
+msgid "Most Watched Movies and TV Shows"
+msgstr ""
+
+msgctxt "#32109"
+msgid "Most Watched Movies"
+msgstr ""
+
+msgctxt "#32110"
+msgid "Most Watched TV Shows"
+msgstr ""
+
+msgctxt "#32111"
+msgid "Popular TV Shows"
+msgstr ""
+
+msgctxt "#32112"
+msgid "Popular Movies"
+msgstr ""

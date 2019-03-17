@@ -9,6 +9,7 @@
         <setting id="num_recent_similar" type="number" label="32072" default="8"/>
         <setting id="aggresive_refresh" type="bool" label="32071" default="false"/>
         <setting id="exp_recommended" type="bool" label="32074" default="true"/>
+        <setting id="extended_info" type="bool" label="32099" default="false"/>
         <setting id="mylist" type="bool" label="32093" default="false"/>
     </category>
     <!-- episodes -->

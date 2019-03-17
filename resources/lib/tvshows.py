@@ -30,6 +30,7 @@ class Tvshows(object):
         """main listing with all our tvshow nodes"""
         tag = self.options.get("tag", "")
         mylist_setting = self.options["mylist"]
+        extended_info_setting = self.options["extended_info"]
         exp_setting = self.options["exp_recommended"]
         if tag:
             label_prefix = u"%s - " % tag
@@ -80,6 +81,14 @@ class Tvshows(object):
                  tag, Tvshows.ICON_IMAGE_DEFAULT),
                 (label_prefix + self.addon.getLocalizedString(32008), "random&mediatype=episodes&tag=%s" %
                  tag, Tvshows.ICON_IMAGE_DEFAULT)]
+        if extended_info_setting:
+            all_items += [
+                (self.addon.getLocalizedString(32100) +' - '+ self.addon.getLocalizedString(32111), "extendedpopulartmdb&mediatype=tvshows", Tvshows.ICON_IMAGE_DEFAULT),
+                (self.addon.getLocalizedString(32101) +' - '+ self.addon.getLocalizedString(32111), "extendedpopulartrakt&mediatype=tvshows", Tvshows.ICON_IMAGE_DEFAULT),
+                (self.addon.getLocalizedString(32101) +' - '+ self.addon.getLocalizedString(32104), "extendedtrending&mediatype=tvshows", Tvshows.ICON_IMAGE_DEFAULT),
+                (self.addon.getLocalizedString(32101) +' - '+ self.addon.getLocalizedString(32107), "extendedmostplayed&mediatype=tvshows", Tvshows.ICON_IMAGE_DEFAULT),
+                (self.addon.getLocalizedString(32101) +' - '+ self.addon.getLocalizedString(32110), "extendedmostwatched&mediatype=tvshows", Tvshows.ICON_IMAGE_DEFAULT)
+            ]
         return self.metadatautils.process_method_on_list(create_main_entry, all_items)
 
     def tagslisting(self):
@@ -352,6 +361,53 @@ class Tvshows(object):
         result = eps.nextaired()
         del eps
         return result
+
+    def extendedpopulartmdb(self):
+        """gets popular tvshows in library from tmdb"""
+        all_items = self.get_extended_matches(self.get_extended_list('populartvshows'))
+        return self.metadatautils.process_method_on_list(self.process_tvshow, all_items[:self.options["limit"]])
+
+    def extendedpopulartrakt(self):
+        """gets popular tvshows in library from trakt"""
+        all_items = self.get_extended_matches(self.get_extended_list('popularshows'))
+        return self.metadatautils.process_method_on_list(self.process_tvshow, all_items[:self.options["limit"]])
+
+    def extendedtrending(self):
+        """gets trending tvshows in library from trakt"""
+        all_items = self.get_extended_matches(self.get_extended_list('trendingshows'))
+        return self.metadatautils.process_method_on_list(self.process_tvshow, all_items[:self.options["limit"]])
+
+    def extendedmostplayed(self):
+        """gets most played tvshows in library from trakt"""
+        all_items = self.get_extended_matches(self.get_extended_list('mostplayedshows'))
+        return self.metadatautils.process_method_on_list(self.process_tvshow, all_items[:self.options["limit"]])
+
+    def extendedmostwatched(self):
+        """gets most watched tvshows in library from trakt"""
+        all_items = self.get_extended_matches(self.get_extended_list('mostwatchedshows'))
+        return self.metadatautils.process_method_on_list(self.process_tvshow, all_items[:self.options["limit"]])
+
+    def get_extended_matches(self, extended_items):
+        """gets tv shows that are in the given extended info list of items"""
+        all_items = []
+        all_tvshows = self.metadatautils.kodidb.tvshows()
+        for tvshow in all_tvshows:
+            # extendedinfo does not supply imdb id for tvshow, try match on title and year basis
+            tvshow_titleandyear = (tvshow['title'], tvshow['year'])
+            if tvshow_titleandyear in extended_items:
+                tvshow["extendedindex"] = extended_items.index(tvshow_titleandyear)
+                all_items.append(tvshow)
+        return sorted(all_items, key=itemgetter("extendedindex"))
+
+    def get_extended_list(self, query):
+        """gets extended info list for the given query"""
+        lib_path = u"plugin://script.extendedinfo?info=%s" % query
+        all_items = self.metadatautils.kodidb.files(lib_path)
+        items_titleandyear_list = []
+        for item in all_items:
+            if 'title' in item and 'year' in item:
+                items_titleandyear_list.append((item['title'], item['year']))
+        return items_titleandyear_list
 
     def get_random_watched_tvshow(self):
         """gets a random watched or inprogress tvshow from kodi_constants."""

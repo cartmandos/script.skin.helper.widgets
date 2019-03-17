@@ -1,2 +1,4 @@
+1.1.0
+- CHANGELOG TO-BE UPDATED
 1.0.39
 - Hotfix for similar tvshows widgets

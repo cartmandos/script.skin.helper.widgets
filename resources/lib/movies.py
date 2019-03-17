@@ -30,6 +30,7 @@ class Movies(object):
         """main listing with all our movie nodes"""
         tag = self.options.get("tag", "")
         mylist_setting = self.options["mylist"]
+        extended_info_setting = self.options["extended_info"]
         exp_setting = self.options["exp_recommended"]
         if tag:
             label_prefix = "%s - " % tag
@@ -73,6 +74,14 @@ class Movies(object):
                 (xbmc.getLocalizedString(136), "playlistslisting&mediatype=movies&tag=%s"
                  % tag, Movies.ICON_IMAGE_DEFAULT),
                 (xbmc.getLocalizedString(20459), "tagslisting&mediatype=movies", Movies.ICON_IMAGE_DEFAULT)
+            ]
+        if extended_info_setting:
+            all_items += [
+                (self.addon.getLocalizedString(32100) +' - '+ self.addon.getLocalizedString(32112), "extendedpopulartmdb&mediatype=movies", Movies.ICON_IMAGE_DEFAULT),
+                (self.addon.getLocalizedString(32101) +' - '+ self.addon.getLocalizedString(32112), "extendedpopulartrakt&mediatype=movies", Movies.ICON_IMAGE_DEFAULT),
+                (self.addon.getLocalizedString(32101) +' - '+ self.addon.getLocalizedString(32103), "extendedtrending&mediatype=movies", Movies.ICON_IMAGE_DEFAULT),
+                (self.addon.getLocalizedString(32101) +' - '+ self.addon.getLocalizedString(32106), "extendedmostplayed&mediatype=movies", Movies.ICON_IMAGE_DEFAULT),
+                (self.addon.getLocalizedString(32101) +' - '+ self.addon.getLocalizedString(32109), "extendedmostwatched&mediatype=movies", Movies.ICON_IMAGE_DEFAULT)
             ]
         return self.metadatautils.process_method_on_list(create_main_entry, all_items)
 
@@ -282,6 +291,62 @@ class Movies(object):
                 movie["top250_rank"] = int(top_250[imdbnumber])
                 all_items.append(movie)
         return sorted(all_items, key=itemgetter("top250_rank"))[:self.options["limit"]]
+
+    def extendedpopulartmdb(self):
+        """gets popular movies in library from tmdb"""
+        all_items = self.get_extended_matches(self.get_extended_list('popularmovies'))
+        return all_items[:self.options["limit"]]
+
+    def extendedpopulartrakt(self):
+        """gets popular movies in library from trakt"""
+        all_items = self.get_extended_matches(self.get_extended_list('traktpopularmovies'))
+        return all_items[:self.options["limit"]]
+
+    def extendedtrending(self):
+        """gets trending movies in library from trakt"""
+        all_items = self.get_extended_matches(self.get_extended_list('trendingmovies'))
+        return all_items[:self.options["limit"]]
+
+    def extendedmostplayed(self):
+        """gets most played movies in library from trakt"""
+        all_items = self.get_extended_matches(self.get_extended_list('mostplayedmovies'))
+        return all_items[:self.options["limit"]]
+
+    def extendedmostwatched(self):
+        """gets most watched movies in library from trakt"""
+        all_items = self.get_extended_matches(self.get_extended_list('mostwatchedmovies'))
+        return all_items[:self.options["limit"]]
+
+    def get_extended_matches(self,extended_items):
+        """gets movies that are in the given extended info list of items"""
+        all_items = []
+        filters = []
+        fields = ["imdbnumber"]
+        if KODI_VERSION > 16:
+            fields.append("uniqueid")
+        all_movies = self.metadatautils.kodidb.get_json(
+            'VideoLibrary.GetMovies', fields=fields, returntype="movies", filters=filters)
+        for movie in all_movies:
+            imdbnumber = movie["imdbnumber"]
+            if not imdbnumber and "uniqueid" in movie:
+                for value in movie["uniqueid"]:
+                    if value.startswith("tt"):
+                        imdbnumber = value
+            if imdbnumber and imdbnumber in extended_items:
+                movie = self.metadatautils.kodidb.movie(movie["movieid"])
+                movie["extendedindex"] = extended_items.index(imdbnumber)
+                all_items.append(movie)
+        return sorted(all_items, key=itemgetter("extendedindex"))
+
+    def get_extended_list(self,query):
+        """gets extended info list for the given query"""
+        lib_path = u"plugin://script.extendedinfo?info=%s" % query
+        all_items = self.metadatautils.kodidb.files(lib_path)
+        items_imdb_list = []
+        for item in all_items:
+            if 'imdbnumber' in item:
+                items_imdb_list.append(item['imdbnumber'])
+        return items_imdb_list
 
     def browsegenres(self):
         """

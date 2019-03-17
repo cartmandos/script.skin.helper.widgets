@@ -51,6 +51,7 @@ class Media(object):
         """main listing with all our media nodes"""
         tag = self.options.get("tag", "")
         exp_setting = self.options["exp_recommended"]
+        extended_info_setting = self.options["extended_info"]
         mylist_setting = self.options["mylist"]
         if tag:
             label_prefix = u"%s - " % tag
@@ -113,6 +114,14 @@ class Media(object):
                 (self.addon.getLocalizedString(32075), "playlistslisting&mediatype=media&movie_label=",
                  Media.ICON_IMAGE_MOVIES),
                 (xbmc.getLocalizedString(20459), "tagslisting&mediatype=media", Media.ICON_IMAGE_MOVIES)
+            ]
+        if extended_info_setting:
+            all_items += [
+                (self.addon.getLocalizedString(32100) +' - '+ self.addon.getLocalizedString(32090), "extendedpopulartmdb&mediatype=media", Media.ICON_IMAGE_MOVIES),
+                (self.addon.getLocalizedString(32101) +' - '+ self.addon.getLocalizedString(32090), "extendedpopulartrakt&mediatype=media", Media.ICON_IMAGE_MOVIES),
+                (self.addon.getLocalizedString(32101) +' - '+ self.addon.getLocalizedString(32102), "extendedtrending&mediatype=media", Media.ICON_IMAGE_MOVIES),
+                (self.addon.getLocalizedString(32101) +' - '+ self.addon.getLocalizedString(32105), "extendedmostplayed&mediatype=media", Media.ICON_IMAGE_MOVIES),
+                (self.addon.getLocalizedString(32101) +' - '+ self.addon.getLocalizedString(32108), "extendedmostwatched&mediatype=media", Media.ICON_IMAGE_MOVIES)
             ]
         return self.metadatautils.process_method_on_list(create_main_entry, all_items)
 
@@ -420,6 +429,41 @@ class Media(object):
     def randomtop250(self):
         """ get random imdb top250 movies and tvshows in library """
         return sorted(self.get_top_250(), key=lambda k: random())[:self.options["limit"]]
+
+    def extendedpopulartmdb(self):
+        """gets popular movies and tvshows from tmdb"""
+        all_items = []
+        all_items += self.movies.extendedpopulartmdb()
+        all_items += self.tvshows.extendedpopulartmdb()
+        return sorted(all_items, key=itemgetter("extendedindex"))[:self.options["limit"]]
+
+    def extendedpopulartrakt(self):
+        """gets popular movies and tvshows from trakt"""
+        all_items = []
+        all_items += self.movies.extendedpopulartrakt()
+        all_items += self.tvshows.extendedpopulartrakt()
+        return sorted(all_items, key=itemgetter("extendedindex"))[:self.options["limit"]]
+
+    def extendedtrending(self):
+        """gets popular movies and tvshows from trakt"""
+        all_items = []
+        all_items += self.movies.extendedtrending()
+        all_items += self.tvshows.extendedtrending()
+        return sorted(all_items, key=itemgetter("extendedindex"))[:self.options["limit"]]
+
+    def extendedmostplayed(self):
+        """gets most played movies and tvshows from trakt"""
+        all_items = []
+        all_items += self.movies.extendedmostplayed()
+        all_items += self.tvshows.extendedmostplayed()
+        return sorted(all_items, key=itemgetter("extendedindex"))[:self.options["limit"]]
+
+    def extendedmostwatched(self):
+        """gets most watched movies and tvshows from trakt"""
+        all_items = []
+        all_items += self.movies.extendedmostwatched()
+        all_items += self.tvshows.extendedmostwatched()
+        return sorted(all_items, key=itemgetter("extendedindex"))[:self.options["limit"]]
 
     def browsegenres(self):
         """special entry which can be used to create custom genre listings
