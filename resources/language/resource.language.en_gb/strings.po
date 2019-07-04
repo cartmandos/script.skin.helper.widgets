@@ -467,3 +467,7 @@ msgstr ""
 msgctxt "#32112"
 msgid "Popular Movies"
 msgstr ""
+
+msgctxt "#32113"
+msgid "Continue Watching Episodes"
+msgstr ""

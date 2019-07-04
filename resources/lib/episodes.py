@@ -31,6 +31,7 @@ class Episodes(object):
         """main listing with all our episode nodes"""
         all_items = [
             (self.addon.getLocalizedString(32027), "inprogress&mediatype=episodes", "DefaultTvShows.png"),
+            (self.addon.getLocalizedString(32113), "continuewatching&mediatype=episodes", "DefaultTvShows.png"),
             (self.addon.getLocalizedString(32002), "next&mediatype=episodes", "DefaultTvShows.png"),
             (self.addon.getLocalizedString(32039), "recent&mediatype=episodes", "DefaultRecentlyAddedEpisodes.png"),
             (self.addon.getLocalizedString(32009), "recommended&mediatype=episodes", "DefaultTvShows.png"),
@@ -140,6 +141,18 @@ class Episodes(object):
                 all_items.append(item)
         return all_items[:self.options["limit"]]
 
+    def continuewatching(self):
+        """ get continue watching episodes """
+        filters = []
+        if self.options.get("tag"):
+            filters.append({"operator": "contains", "field": "tag", "value": self.options["tag"]})
+        if self.options.get("path"):
+            filters.append({"operator": "startswith", "field": "path", "value": self.options["path"]})
+        all_shows = self.metadatautils.kodidb.tvshows(sort=kodi_constants.SORT_LASTPLAYED, filters=filters,
+                                                      limits=(0, self.options["limit"]))
+        return self.metadatautils.process_method_on_list(self.get_continue_episode_for_show, [
+                                                         d['tvshowid'] for d in all_shows])
+
     def next(self):
         """ get next episodes """
         filters = [kodi_constants.FILTER_UNWATCHED]
@@ -154,6 +167,37 @@ class Episodes(object):
                                                       limits=(0, self.options["limit"]))
         return self.metadatautils.process_method_on_list(self.get_next_episode_for_show, [
                                                          d['tvshowid'] for d in all_shows])
+
+    def get_continue_episode_for_show(self, show_id):
+        """
+        get last played episode for show, if it's in-progress then returns the episode, else returns the next episode
+        if no episode has played or no episode left then returns none
+        """
+        filters = []
+        fields = ["playcount", "season", "resume"]
+        continue_episode = None
+        if not self.options["episodes_enable_specials"]:
+            filters.append({"field": "season", "operator": "greaterthan", "value": "0"})
+        last_played_episode = self.metadatautils.kodidb.episodes(sort=kodi_constants.SORT_LASTPLAYED,
+                    filters=filters, limits=(0, 1), tvshowid=show_id, fields=fields)
+        if last_played_episode:
+            last_played_episode = last_played_episode[0]
+            filter_season = last_played_episode["season"] - 1
+            filter_season = [{"field": "season", "operator": "greaterthan", "value": "%s" % filter_season}]
+            all_episodes = self.metadatautils.kodidb.episodes(sort=kodi_constants.SORT_EPISODE,
+                    filters=filters + filter_season, tvshowid=show_id, fields=fields)
+            # find index of last_played_episode in the list all_episodes and return inprogress episode or the next episode
+            try:
+                for index, episode in enumerate(all_episodes):
+                    if episode['episodeid'] == last_played_episode['episodeid']:
+                        if int(all_episodes[index]["resume"]["position"]) > 0:
+                            continue_episode = all_episodes[index]
+                        else:
+                            continue_episode = all_episodes[index + 1]
+            except IndexError:
+                # no episodes left
+                continue_episode = None
+        return self.metadatautils.kodidb.episode(continue_episode["episodeid"]) if continue_episode else None
 
     def get_next_episode_for_show(self, show_id):
         """
